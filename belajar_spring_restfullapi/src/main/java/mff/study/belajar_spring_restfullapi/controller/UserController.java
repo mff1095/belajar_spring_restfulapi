@@ -5,6 +5,7 @@ import mff.study.belajar_spring_restfullapi.model.GetUserResponse;
 import mff.study.belajar_spring_restfullapi.model.RegisterUserRequest;
 import mff.study.belajar_spring_restfullapi.model.UpdateUserRequest;
 import mff.study.belajar_spring_restfullapi.model.WebResponse;
+import mff.study.belajar_spring_restfullapi.service.AuthService;
 import mff.study.belajar_spring_restfullapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,6 +16,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AuthService authService;
 
     @PostMapping(
             path = "/api/users",
@@ -46,6 +50,19 @@ public class UserController {
         GetUserResponse response = userService.updateUser(user , request);
         return WebResponse.<GetUserResponse>builder()
                 .data(response)
+                .build();
+    }
+
+    @DeleteMapping(
+            path = "/api/auth/logout",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    private WebResponse<String> logout (User user){
+
+        authService.logout(user);
+
+        return WebResponse.<String>builder()
+                .data("OK")
                 .build();
     }
 

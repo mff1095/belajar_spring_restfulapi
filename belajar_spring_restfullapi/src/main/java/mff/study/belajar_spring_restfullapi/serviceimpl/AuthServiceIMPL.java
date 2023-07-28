@@ -44,6 +44,15 @@ public class AuthServiceIMPL implements AuthService {
        }
 }
 
+    @Override
+    @Transactional
+    public void logout(User user) {
+        user.setToken(null);
+        user.setTokenExpiredAt(null);
+
+        userRepository.save(user);
+    }
+
     private Long next30days(){
         return System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 30);
     }
