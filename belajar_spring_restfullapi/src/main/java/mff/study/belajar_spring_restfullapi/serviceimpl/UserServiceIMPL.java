@@ -1,10 +1,8 @@
 package mff.study.belajar_spring_restfullapi.serviceimpl;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validator;
 import mff.study.belajar_spring_restfullapi.entity.User;
+import mff.study.belajar_spring_restfullapi.model.GetUserResponse;
 import mff.study.belajar_spring_restfullapi.model.RegisterUserRequest;
 import mff.study.belajar_spring_restfullapi.repository.UserRepository;
 import mff.study.belajar_spring_restfullapi.security.BCrypt;
@@ -14,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Set;
 @Service
 public class UserServiceIMPL implements UserService {
 
@@ -38,5 +35,13 @@ public class UserServiceIMPL implements UserService {
             user.setName(request.getName());
 
             userRepository.save(user);
+    }
+
+    @Override
+    public GetUserResponse getUser(User user) {
+        return GetUserResponse.builder()
+                .username(user.getUsername())
+                .name(user.getName())
+                .build();
     }
 }

@@ -1,5 +1,7 @@
 package mff.study.belajar_spring_restfullapi.controller;
 
+import mff.study.belajar_spring_restfullapi.entity.User;
+import mff.study.belajar_spring_restfullapi.model.GetUserResponse;
 import mff.study.belajar_spring_restfullapi.model.RegisterUserRequest;
 import mff.study.belajar_spring_restfullapi.model.WebResponse;
 import mff.study.belajar_spring_restfullapi.service.UserService;
@@ -25,6 +27,16 @@ public class UserController {
         userService.register(request);
 
         return WebResponse.<String>builder().data("OK").build();
+    }
+
+    @GetMapping(
+            path = "/api/users/current",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    private WebResponse<GetUserResponse> getUser (User user){
+        GetUserResponse getUserResponse = userService.getUser(user);
+        return  WebResponse.<GetUserResponse>builder().data(getUserResponse).build();
+
     }
 
 }
