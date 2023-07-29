@@ -3,6 +3,7 @@ package mff.study.belajar_spring_restfullapi.service;
 import mff.study.belajar_spring_restfullapi.entity.User;
 import mff.study.belajar_spring_restfullapi.model.ContactResponse;
 import mff.study.belajar_spring_restfullapi.model.CreateContactRequest;
+import mff.study.belajar_spring_restfullapi.model.UpdateContactRequest;
 
 public interface ContactService {
 
@@ -10,6 +11,6 @@ public interface ContactService {
 
     ContactResponse get (User user , String id);
 
-
+    ContactResponse update (User user , UpdateContactRequest request);
 
 }

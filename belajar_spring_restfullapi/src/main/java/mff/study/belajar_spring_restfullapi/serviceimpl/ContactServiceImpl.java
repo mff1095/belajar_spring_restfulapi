@@ -5,6 +5,7 @@ import mff.study.belajar_spring_restfullapi.entity.Contact;
 import mff.study.belajar_spring_restfullapi.entity.User;
 import mff.study.belajar_spring_restfullapi.model.ContactResponse;
 import mff.study.belajar_spring_restfullapi.model.CreateContactRequest;
+import mff.study.belajar_spring_restfullapi.model.UpdateContactRequest;
 import mff.study.belajar_spring_restfullapi.repository.ContactRepository;
 import mff.study.belajar_spring_restfullapi.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +57,25 @@ public class ContactServiceImpl implements ContactService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "contact is not found"));
 
         return toContactResponse(contact);
+    }
+
+    @Override
+    @Transactional
+    public ContactResponse update(User user, UpdateContactRequest request) {
+
+        validationService.validate(request);
+
+        Contact contact = contactRepository.findFirstByUserAndId(user , request.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "contact not found"));
+
+        contact.setFirstName(request.getFirstName());
+        contact.setLastName(request.getLastName());
+        contact.setEmail(request.getEmail());
+        contact.setPhone(request.getPhone());
+
+        contactRepository.save(contact);
+
+        return toContactResponse(contact);
+
     }
 }
