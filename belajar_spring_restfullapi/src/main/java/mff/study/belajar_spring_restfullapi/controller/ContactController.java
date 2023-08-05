@@ -1,16 +1,15 @@
 package mff.study.belajar_spring_restfullapi.controller;
 
 import mff.study.belajar_spring_restfullapi.entity.User;
-import mff.study.belajar_spring_restfullapi.model.ContactResponse;
-import mff.study.belajar_spring_restfullapi.model.CreateContactRequest;
-import mff.study.belajar_spring_restfullapi.model.UpdateContactRequest;
-import mff.study.belajar_spring_restfullapi.model.WebResponse;
+import mff.study.belajar_spring_restfullapi.model.*;
 import mff.study.belajar_spring_restfullapi.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.print.attribute.standard.Media;
+import java.util.List;
 
 @RestController
 public class ContactController {
@@ -54,6 +53,38 @@ public class ContactController {
         ContactResponse response = contactService.update(user , request);
 
         return WebResponse.<ContactResponse>builder().data(response).build();
+    }
+    @GetMapping(
+            path = "/api/contacts",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<List<ContactResponse>> search (User user ,
+                                                      @RequestParam(name = "name" , required = false)String name,
+                                                      @RequestParam(name = "email" , required = false)String email,
+                                                      @RequestParam(name = "phone" , required = false)String phone,
+                                                      @RequestParam(name = "page" , required = false , defaultValue = "0")Integer page,
+                                                      @RequestParam(name = "size" , required = false, defaultValue = "5")Integer size
+                                                      ) {
+
+        SearchContactRequest request = SearchContactRequest.builder()
+                .name(name)
+                .phone(phone)
+                .email(email)
+                .page(page)
+                .size(size)
+                .build();
+
+        Page<ContactResponse> responses = contactService.search(user , request);
+
+        return WebResponse.<List<ContactResponse>>builder()
+                .data(responses.getContent())
+                .paging(PagingResponse.builder()
+                        .page(responses.getTotalPages())
+                        .size(responses.getSize())
+                        .current(responses.getNumber())
+                        .build())
+                .build();
+
     }
 
 }
