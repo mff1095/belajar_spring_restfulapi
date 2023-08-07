@@ -13,7 +13,7 @@ import javax.print.attribute.standard.MediaSize;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "addresses")
+@Table(name = "adresses")
 public class Address {
     @Id
     private String id;
