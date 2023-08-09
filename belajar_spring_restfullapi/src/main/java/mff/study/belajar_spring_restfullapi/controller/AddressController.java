@@ -1,9 +1,7 @@
 package mff.study.belajar_spring_restfullapi.controller;
 
 import mff.study.belajar_spring_restfullapi.entity.User;
-import mff.study.belajar_spring_restfullapi.model.AddressResponse;
-import mff.study.belajar_spring_restfullapi.model.CreateAddressRequest;
-import mff.study.belajar_spring_restfullapi.model.WebResponse;
+import mff.study.belajar_spring_restfullapi.model.*;
 import mff.study.belajar_spring_restfullapi.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -42,6 +40,23 @@ public class AddressController {
         AddressResponse response = addressService.get(user , idContact , idAddress);
 
         return WebResponse.<AddressResponse>builder().data(response).build();
+    }
+
+    @PutMapping(
+            path = "/api/contact/{idContact}/address/{addressId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<AddressResponse> create (User user,
+                                                @RequestBody UpdateAddressRequest request,
+                                                @PathVariable("idContact")String idContact,
+                                                @PathVariable("addressId")String addressId){
+        request.setContactId(idContact);
+        request.setAddressId(addressId);
+
+        AddressResponse result = addressService.update(user , request);
+        return WebResponse.<AddressResponse>builder().data(result).build();
+
     }
 
 }
