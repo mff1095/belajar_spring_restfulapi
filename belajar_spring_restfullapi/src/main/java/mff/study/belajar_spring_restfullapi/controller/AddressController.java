@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.print.attribute.standard.Media;
+import java.util.List;
 
 @RestController
 public class AddressController {
@@ -57,6 +58,31 @@ public class AddressController {
         AddressResponse result = addressService.update(user , request);
         return WebResponse.<AddressResponse>builder().data(result).build();
 
+    }
+
+    @DeleteMapping(
+            path = "/api/contact/{contactId}/address/{addressId}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<String> update (User user ,
+                                       @PathVariable ("contactId")String contactId,
+                                       @PathVariable("addressId")String addressId){
+
+        addressService.remove(user , contactId , addressId);
+
+        return WebResponse.<String>builder().data("Ok").build();
+
+    }
+
+    @GetMapping(
+            path = "/api/contact/{contactId}/addresses",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<List<AddressResponse>> getList (User user ,
+                                                 @PathVariable("contactId")String contactId){
+        List<AddressResponse> response = addressService.listAddress(user , contactId);
+
+        return WebResponse.<List<AddressResponse>>builder().data(response).build();
     }
 
 }

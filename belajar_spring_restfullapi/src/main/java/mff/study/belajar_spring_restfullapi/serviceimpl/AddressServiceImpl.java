@@ -3,10 +3,7 @@ package mff.study.belajar_spring_restfullapi.serviceimpl;
 import mff.study.belajar_spring_restfullapi.entity.Address;
 import mff.study.belajar_spring_restfullapi.entity.Contact;
 import mff.study.belajar_spring_restfullapi.entity.User;
-import mff.study.belajar_spring_restfullapi.model.ContactResponse;
-import mff.study.belajar_spring_restfullapi.model.CreateAddressRequest;
-import mff.study.belajar_spring_restfullapi.model.AddressResponse;
-import mff.study.belajar_spring_restfullapi.model.UpdateAddressRequest;
+import mff.study.belajar_spring_restfullapi.model.*;
 import mff.study.belajar_spring_restfullapi.repository.AddressRepository;
 import mff.study.belajar_spring_restfullapi.repository.ContactRepository;
 import mff.study.belajar_spring_restfullapi.service.AddressService;
@@ -16,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -77,6 +75,8 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public AddressResponse update(User user, UpdateAddressRequest request) {
+        validationService.validate(request);
+
         Contact contact = contactRepository.findFirstByUserAndId(user , request.getContactId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "contact is not found"));
 
@@ -91,5 +91,31 @@ public class AddressServiceImpl implements AddressService {
         addressRepository.save(address);
 
         return toAddressResponse(address);
+    }
+
+    @Override
+    @Transactional
+    public void remove(User user, String contactId, String addressId) {
+
+        Contact contact = contactRepository.findFirstByUserAndId(user , contactId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "contact not found"));
+
+        Address address = addressRepository.findFirstByContactAndId(contact , addressId )
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "address not found"));
+
+        addressRepository.deleteById(address.getId());
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AddressResponse> listAddress(User user, String contactId) {
+        Contact contact = contactRepository.findFirstByUserAndId(user , contactId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "contact not found"));
+
+        List<Address> addressList = addressRepository.findAllByContact(contact);
+        List<AddressResponse> result = addressList.stream().map(this::toAddressResponse).toList();
+
+        return result;
     }
 }

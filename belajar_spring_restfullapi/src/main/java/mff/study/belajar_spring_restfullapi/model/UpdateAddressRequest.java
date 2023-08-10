@@ -1,6 +1,7 @@
 package mff.study.belajar_spring_restfullapi.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class UpdateAddressRequest {
 
     private String province;
 
+    @NotBlank
     private String country;
 
     private String postalCode;
